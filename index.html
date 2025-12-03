@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- === SEO 優化區塊 (確認位置正確 ✅) === -->
+    <title>晚餐吃什麼 | 選擇困難救星</title>
+    <meta name="description" content="晚餐吃什麼？全台最強晚餐選擇器！解決你的選擇困難症。不用註冊，輸入飢餓度與心情，3秒幫你決定今晚吃火鍋、燒肉還是舒肥餐盒。">
+    <meta name="keywords" content="晚餐吃什麼, 選擇困難, 美食推薦, 晚餐轉盤, 台北美食, 晚餐吃啥, 隨機晚餐">
+    <meta name="author" content="晚餐救星團隊">
+    <!-- 社群分享預覽 (當網址貼到 Line/FB 時顯示的內容) -->
+    <meta property="og:title" content="晚餐吃什麼 | 選擇困難救星">
+    <meta property="og:description" content="別再說隨便了！一鍵幫你決定今晚吃什麼，各種隱藏版美食靈感都在這。">
+    <meta property="og:type" content="website">
+
+    <!-- === Google Analytics 追蹤碼 (請替換 ID) === -->
+    <!-- 1. 請將 'G-YOUR_ID_HERE' 替換成您在 GA 後台拿到的 '評估 ID' (例如 G-12345ABCDE) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YOUR_ID_HERE"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      // 2. 下面這行也要替換 ID
+      gtag('config', 'G-C5JJTP8L35');
+    </script>
+    <!-- ========================================== -->
+
+    <style>
+        :root {
+            /* 延續您喜歡的 v4.0 暖色調 */
+            --primary: #FF9F43; /* 活力橘 */
+            --primary-dark: #EE5A24; /* 深橘紅 */
+            --bg-color: #fdf6e3; /* 溫暖米黃 */
+            --card-bg: #ffffff;
+            --text-main: #2d3436; /* 深灰 */
+            --text-sub: #636e72;
+            --border-color: #FFC312;
+            --selected-bg: #ffeaa7;
+            --whatever-bg: #dfe6e9;
+        }
+
+        body {
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            background: var(--bg-color);
+            background-image: radial-gradient(#ffeaa7 15%, transparent 15%), radial-gradient(#ffeaa7 15%, transparent 15%);
+            background-size: 24px 24px;
+            background-position: 0 0, 12px 12px;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-main);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 15px;
+            box-sizing: border-box;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(255, 159, 67, 0.15);
+            border: 2px solid #fff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            max-height: 95vh;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin: 0;
+            text-align: center;
+            color: var(--text-main);
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            text-align: center;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        /* 按鈕樣式 */
+        .option-btn {
+            background: #fff;
+            border: 2px solid #dfe6e9;
+            border-radius: 16px;
+            padding: 15px;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            color: var(--text-main);
+            transition: all 0.1s;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .option-btn:active { transform: scale(0.98); }
+        
+        .option-btn.selected {
+            background: var(--selected-bg);
+            border-color: var(--primary-dark);
+        }
+        .option-btn.selected::after {
+            content: "✅";
+            position: absolute;
+            right: 15px;
+            font-size: 1.2rem;
+        }
+
+        /* 都可以按鈕 */
+        .option-btn.whatever {
+            background: var(--whatever-bg);
+            border-style: dashed;
+            color: var(--text-sub);
+        }
+        .option-btn.whatever.selected {
+            background: #b2bec3;
+            color: #fff;
+            border-color: var(--text-sub);
+        }
+
+        .emoji { font-size: 1.8rem; margin-right: 15px; min-width: 40px; text-align: center; }
+        .text-group { display: flex; flex-direction: column; }
+        .main-text { font-weight: bold; font-size: 1.05rem; }
+        .sub-text { font-size: 0.8rem; opacity: 0.8; margin-top: 4px; }
+
+        /* 格鬥場樣式 */
+        .elimination-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            overflow-y: auto;
+            padding: 5px;
+            flex: 1;
+        }
+
+        .food-item {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 85px;
+        }
+
+        .food-item .food-emoji { font-size: 2rem; margin-bottom: 5px; }
+        .food-item .food-name { font-size: 1rem; font-weight: bold; line-height: 1.2; }
+
+        .food-item.killed {
+            background: #fab1a0;
+            border-color: #fab1a0;
+            opacity: 0.5;
+            transform: scale(0.9);
+            filter: grayscale(0.5);
+        }
+        .food-item.killed::after {
+            content: "❌";
+            position: absolute;
+            font-size: 3rem;
+            opacity: 0.8;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* 底部大按鈕 */
+        .big-btn {
+            padding: 16px;
+            font-size: 1.1rem;
+            border: none;
+            background: linear-gradient(135deg, #FF9F43 0%, #EE5A24 100%);
+            color: white;
+            border-radius: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(238, 90, 36, 0.3);
+            margin-top: 10px;
+            transition: transform 0.1s;
+        }
+        .big-btn:active { transform: scale(0.95); }
+        .big-btn.secondary {
+            background: white;
+            border: 2px solid var(--primary);
+            color: var(--primary-dark);
+            box-shadow: none;
+        }
+        
+        .action-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .action-row .big-btn {
+            margin-top: 0;
+            flex: 1;
+            font-size: 1rem;
+            padding: 14px;
+        }
+
+        /* 結果頁 */
+        .result-list { flex: 1; overflow-y: auto; margin: 10px 0; display: flex; flex-direction: column; gap: 10px; }
+        .result-card {
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 15px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .gmap-link {
+            background: #4285F4; color: white; text-decoration: none;
+            padding: 10px 15px; border-radius: 10px; font-size: 0.9rem; font-weight: bold;
+        }
+
+        .hidden { display: none !important; }
+        .nav-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .back-text { color: var(--text-sub); font-size: 0.9rem; cursor: pointer; padding: 5px; }
+
+        /* 浮動提醒 (Toast) */
+        .roast-toast {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.85);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 1rem;
+            z-index: 10;
+            animation: popIn 0.3s;
+            text-align: center;
+        }
+        @keyframes popIn { from {opacity:0; transform: translate(-50%, -40%);} to {opacity:1; transform: translate(-50%, -50%);} }
+        
+        .cvs-notice {
+            font-size: 0.8rem;
+            color: #b2bec3;
+            text-align: center;
+            margin-top: 10px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- 1. 首頁 -->
+    <div id="screen-home" class="card">
+        <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+            <div style="font-size: 5rem; margin-bottom: 10px;">🤤</div>
+            <h1>晚餐吃什麼<br><span style="font-size:1rem; font-weight:normal; background: var(--primary); color: white; padding: 2px 8px; border-radius: 20px;">選擇困難救星</span></h1>
+            <p style="color: var(--text-sub); margin-top: 15px; text-align: center; line-height: 1.6;">
+                不問你想吃飯還是麵，<br>
+                只問你今天的「感覺」對不對。<br>
+            </p>
+        </div>
+        <button class="big-btn" onclick="goToFilter()">📝 開始篩選</button>
+        <button class="big-btn secondary" onclick="startRandom()">🎲 隨機一發</button>
+        <div class="cvs-notice">
+            📢 系統公告：超商因為太無敵會害系統當機，<br>請左轉出門自己買 (笑)
+        </div>
+    </div>
+
+    <!-- 2. 大方向篩選 (Vibe Check) -->
+    <div id="screen-filter" class="card hidden">
+        <div class="nav-header"><span class="back-text" onclick="goHome()">⬅ 回首頁</span></div>
+        
+        <h1>今天晚餐，吃點好的</h1>
+        <p class="subtitle">回答這四題，篩出你想吃的「氛圍」</p>
+
+        <div style="flex:1; overflow-y:auto; padding-right: 5px;">
+            
+            <!-- Q1 社交 (Social) -->
+            <div style="margin-bottom: 25px;">
+                <p class="main-text">1. 今天是什麼局？</p>
+                <div class="option-btn" onclick="setFilter('social', 'solo', this)" data-q="social">
+                    <span class="emoji">🧍</span>
+                    <div class="text-group"><span class="main-text">孤獨美食家</span><span class="sub-text">一人食，自在最重要 (解鎖小吃/便當)</span></div>
+                </div>
+                <div class="option-btn" onclick="setFilter('social', 'group', this)" data-q="social">
+                    <span class="emoji">🍻</span>
+                    <div class="text-group"><span class="main-text">朋友/家庭聚餐</span><span class="sub-text">需要坐下來好好聊 (封殺生存類食物)</span></div>
+                </div>
+                <div class="option-btn whatever" onclick="setFilter('social', 'any', this)" data-q="social">
+                    <span class="emoji">🤷‍♂️</span>
+                    <div class="text-group"><span class="main-text">都可以</span><span class="sub-text">沒差，好吃就行</span></div>
+                </div>
+            </div>
+
+            <!-- Q2 罪惡感 (Health) -->
+            <div style="margin-bottom: 25px;">
+                <p class="main-text">2. 關於「罪惡感」這件事...</p>
+                <div class="option-btn" onclick="setFilter('health', 'heavy', this)" data-q="health">
+                    <span class="emoji">😈</span>
+                    <div class="text-group"><span class="main-text">快樂至上 (高熱量)</span><span class="sub-text">炸雞、五花肉、全糖，人生苦短吃就對了！</span></div>
+                </div>
+                <div class="option-btn" onclick="setFilter('health', 'normal', this)" data-q="health">
+                    <span class="emoji">⚖️</span>
+                    <div class="text-group"><span class="main-text">均衡適中 (標準)</span><span class="sub-text">有菜有肉的便當、定食，做個正常人</span></div>
+                </div>
+                <div class="option-btn" onclick="setFilter('health', 'diet', this)" data-q="health">
+                    <span class="emoji">🥗</span>
+                    <div class="text-group"><span class="main-text">還債時刻 (清淡)</span><span class="sub-text">最近吃太好，今晚想清腸胃、吃草</span></div>
+                </div>
+                 <div class="option-btn" onclick="setFilter('health', 'survival', this)" data-q="health">
+                    <span class="emoji">🔋</span>
+                    <div class="text-group"><span class="main-text">極簡充飢 (生存)</span><span class="sub-text">月底了，能止餓活下去就好</span></div>
+                </div>
+                <div class="option-btn whatever" onclick="setFilter('health', 'any', this)" data-q="health">
+                    <span class="emoji">🤷‍♂️</span>
+                    <div class="text-group"><span class="main-text">都可以</span><span class="sub-text">熱量什麼的，隨風去吧</span></div>
+                </div>
+            </div>
+
+            <!-- Q3 狀態/溫度 (Temp) -->
+            <div style="margin-bottom: 25px;">
+                <p class="main-text">3. 口感物理狀態？</p>
+                <div class="option-btn" onclick="setFilter('temp', 'hot', this)" data-q="temp">
+                    <span class="emoji">♨️</span>
+                    <div class="text-group"><span class="main-text">靈魂高溫燉煮</span><span class="sub-text">火熱靈魂湯：火鍋、湯麵、熱粥 (想喝熱湯喝到發汗)</span></div>
+                </div>
+                <div class="option-btn" onclick="setFilter('temp', 'dry', this)" data-q="temp">
+                    <span class="emoji">🌵</span>
+                    <div class="text-group"><span class="main-text">卡滋卡滋硬派</span><span class="sub-text">拒絕濕黏：炸物、烤物、乾麵 (要脆要乾，純粹發洩)</span></div>
+                </div>
+                <div class="option-btn" onclick="setFilter('temp', 'cold', this)" data-q="temp">
+                    <span class="emoji">❄️</span>
+                    <div class="text-group"><span class="main-text">舌尖降溫計畫</span><span class="sub-text">涼拌、生食、沙拉 (拒絕熱氣，冷靜一下)</span></div>
+                </div>
+                 <div class="option-btn whatever" onclick="setFilter('temp', 'any', this)" data-q="temp">
+                    <span class="emoji">🤷‍♂️</span>
+                    <div class="text-group"><span class="main-text">都可以</span><span class="sub-text">冷熱不拘</span></div>
+                </div>
+            </div>
+
+            <!-- Q4 用餐目的 (Purpose) -->
+            <div>
+                <p class="main-main-text">4. 今天這餐的「目的」是？</p>
+                <div class="option-btn" onclick="setFilter('purpose', 'meal', this)" data-q="purpose">
+                    <span class="emoji">🍽️</span>
+                    <div class="text-group"><span class="main-text">主餐級</span><span class="sub-text">我要飽足感，有飯有麵有菜，吃飽吃滿</span></div>
+                </div>
+                <div class="option-btn" onclick="setFilter('purpose', 'snack', this)" data-q="purpose">
+                    <span class="emoji">☕</span>
+                    <div class="text-group"><span class="main-text">充飢墊胃</span><span class="sub-text">點心、小吃、填縫，正餐可以省略</span></div>
+                </div>
+                 <div class="option-btn whatever" onclick="setFilter('purpose', 'any', this)" data-q="purpose">
+                    <span class="emoji">🤷‍♂️</span>
+                    <div class="text-group"><span class="main-text">都可以</span><span class="sub-text">肚子不說話，隨緣即可</span></div>
+                </div>
+            </div>
+
+        </div>
+        <button class="big-btn" onclick="goToElimination()">下一步：看名單 ➔</button>
+    </div>
+
+    <!-- 3. 淘汰格鬥場 -->
+    <div id="screen-elimination" class="card hidden">
+        <div class="nav-header"><span class="back-text" onclick="goToFilter()">⬅ 上一步</span></div>
+        
+        <h1>直覺淘汰賽</h1>
+        <p class="subtitle">看到哪個<span style="color:#d63031; font-weight:bold;">不想吃</span>？點擊它踢出去！</p>
+
+        <div id="grid-container" class="elimination-grid">
+            <!-- JS 生成食物卡片 -->
+        </div>
+
+        <div id="roast-toast" class="roast-toast hidden"></div>
+
+        <div class="action-row">
+            <button class="big-btn secondary" onclick="loadNextBatch()">🔄 再來16個</button>
+            <button class="big-btn" onclick="showFinalResult()">✨ 這些都行！</button>
+        </div>
+    </div>
+
+    <!-- 4. 結果頁 -->
+    <div id="screen-result" class="card hidden">
+        <div style="text-align: center;">
+            <span style="font-size: 3rem;">🎉</span>
+            <h1>倖存者名單</h1>
+            <p class="subtitle" id="result-subtitle"></p>
+        </div>
+
+        <div id="result-content" class="result-list"></div>
+
+        <div class="reminder-box" style="background:#fff3cd; color:#856404; padding:10px; border-radius:12px; font-size:0.85rem; margin-top:auto; text-align:left; border-left:4px solid #ffc107;">
+            💡 <strong>老司機提醒：</strong><br>
+            搜尋後別忘了設定：預算 ($~$$$)、距離、營業時間。
+        </div>
+
+        <button class="big-btn secondary" onclick="goHome()" style="margin-top: 10px;">
+            🔄 重新一局
+        </button>
+    </div>
+
+</div>
+
+<script>
+    // --- 1. 海量資料庫 (v12.3 - 純中文) ---
+    // 標籤系統: s(social), h(health), t(temp), p(purpose: meal/snack)
+    const db = [
+        // === 飯類 (Rice) ===
+        { n: "肉絲蛋炒飯", s: "solo", h: "heavy", t: "dry", p: "meal", e: "🍚" },
+        { n: "蝦仁炒飯", s: "solo", h: "heavy", t: "dry", p: "meal", e: "🦐" },
+        { n: "韓式泡菜炒飯", s: "solo", h: "heavy", t: "dry", p: "meal", e: "🍚" },
+        { n: "鮭魚炒飯", s: "solo", h: "normal", t: "dry", p: "meal", e: "🐟" },
+        { n: "廣式炒飯", s: "solo", h: "heavy", t: "dry", p: "meal", e: "🍚" },
+        { n: "滷肉飯+燙青菜", s: "solo", h: "heavy", t: "hot", p: "meal", e: "🍚" },
+        { n: "雞肉飯", s: "solo", h: "heavy", t: "hot", p: "meal", e: "🐓" },
+        { n: "控肉飯", s: "solo", h: "heavy", t: "hot", p: "meal", e: "🍖" },
+        { n: "古早味排骨飯", s: "solo", h: "heavy", t: "dry", p: "meal", e: "🍖" },
+        { n: "炸雞腿飯", s: "solo", h: "heavy", t: "dry", p: "meal", e: "🍗" },
+        { n: "三寶飯 (燒臘)", s: "solo", h: "heavy", t: "dry", p: "meal", e: "🦆" },
+        { n: "海南雞飯", s: "any", h: "diet", t: "hot", p: "meal", e: "🍗" },
+        { n: "泰式打拋豬肉飯", s: "any", h: "heavy", t: "hot", p: "meal", e: "🇹🇭" },
+        { n: "日式咖哩飯", s: "any", h: "normal", t: "hot", p: "meal", e: "🍛" },
+        { n: "日式丼飯 (牛/豬)", s: "any", h: "heavy", t: "hot", p: "meal", e: "🥩" },
+        { n: "蒲燒鰻魚飯", s: "any", h: "heavy", t: "hot", p: "meal", e: "🍣" },
+        { n: "宮保雞丁飯", s: "any", h: "heavy", t: "hot", p: "meal", e: "🌶️" },
+        { n: "歐姆蛋包飯", s: "any", h: "normal", t: "hot", p: "meal", e: "🍳" },
+        { n: "滑蛋牛肉燴飯", s: "solo", h: "normal", t: "hot", p: "meal", e: "🍛" },
+        { n: "海鮮燴飯", s: "solo", h: "normal", t: "hot", p: "meal", e: "🦑" },
+        { n: "石鍋拌飯", s: "any", h: "normal", t: "hot", p: "meal", e: "🥘" },
+        { n: "廣東粥", s: "solo", h: "diet", t: "hot", p: "snack", e: "🥣" },
+        { n: "皮蛋瘦肉粥", s: "solo", h: "diet", t: "hot", p: "snack", e: "🥣" },
+        { n: "鹹蛋黃炒飯", s: "solo", h: "heavy", t: "dry", p: "meal", e: "🍚" },
+        { n: "筒仔米糕", h: "light", t: "dry", p: "snack", e: "🍚" },
+        { n: "超商御飯糰", s: "solo", h: "survival", t: "cold", p: "snack", e: "🍙" },
+        { n: "舒肥雞胸餐盒", s: "solo", h: "diet", t: "dry", p: "meal", e: "🍱" },
+        { n: "素食咖哩飯", s: "any", h: "diet", t: "hot", p: "meal", e: "🍛" },
+        { n: "麻婆豆腐飯", s: "solo", h: "heavy", t: "hot", p: "meal", e: "🌶️" },
+        { n: "烤雞腿便當", s: "solo", h: "normal", t: "dry", p: "meal", e: "🍱" },
+        { n: "藜麥鮭魚餐盒", s: "solo", h: "diet", t: "cold", p: "meal", e: "🐟" },
+        { n: "五穀飯糰", s: "solo", h: "diet", t: "cold", p: "snack", e: "🍙" },
+        
+        // === 麵類 (Noodle) ===
+        { n: "清燉牛肉麵", s: "any", h: "diet", t: "hot", p: "meal", e: "🍜" },
+        { n: "紅燒牛肉麵", s: "any", h: "heavy", t: "hot", p: "meal", e: "🌶️" },
+        { n: "麻醬麵", s: "solo", h: "heavy", t: "hot", p: "meal", e: "🍝" },
+        { n: "炸醬麵", s: "solo", h: "heavy", t: "hot", p: "meal", e: "🍝" },
+        { n: "陽春麵 (湯)", s: "solo", h: "light", t: "hot", p: "snack", e: "🍜" },
+        { n: "切仔麵", s: "solo", h: "light", t: "hot", p: "snack", e: "🍜" },
+        { n: "餛飩麵", s: "solo", h: "light", t: "hot", p: "meal", e: "🥟" },
+        { n: "涼麵", s: "solo", h: "normal", t: "cold", p: "snack", e: "❄️" },
+        { n: "義大利麵 (白醬)", s: "group", h: "heavy", t: "hot", p: "meal", e: "🍝" },
+        { n: "義大利麵 (青醬)", s: "group", h: "normal", t: "hot", p: "meal", e: "🍝" },
+        { n: "義大利麵 (紅醬)", s: "group", h: "normal", t: "hot", p: "meal", e: "🍝" },
+        { n: "豚骨拉麵", s: "any", h: "heavy", t: "hot", p: "meal", e: "🍥" },
+        { n: "味噌拉麵", s: "any", h: "heavy", t: "hot", p: "meal", e: "🍥" },
+        { n: "日式沾麵", s: "solo", h: "normal", t: "hot", p: "meal", e: "🍜" },
+        { n: "炒泡麵", s: "solo", h: "heavy", t: "dry", p: "snack", e: "🍜" },
+        { n: "台式炒麵", s: "heavy", t: "dry", p: "meal", e: "🍝" },
+        { n: "乾炒牛河", s: "heavy", t: "dry", p: "meal", e: "🍝" },
+        { n: "廣東炒麵", s: "heavy", t: "hot", p: "meal", e: "🍝" },
+        { n: "越南河粉", s: "any", h: "diet", t: "hot", p: "meal", e: "🇻🇳" },
+        { n: "鍋燒意麵", s: "solo", h: "heavy", t: "hot", p: "meal", e: "🍲" },
+        { n: "烏龍麵 (湯)", s: "any", h: "normal", t: "hot", p: "meal", e: "🍲" },
+        { n: "炒烏龍", s: "any", h: "heavy", t: "hot", p: "meal", e: "🍝" },
+        { n: "米粉湯", s: "solo", h: "light", t: "hot", p: "snack", e: "🥣" },
+        { n: "肉羹麵", s: "solo", h: "heavy", t: "hot", p: "meal", e: "🍲" },
+        { n: "蚵仔麵線", s: "solo", h: "heavy", t: "hot", p: "snack", e: "🦪" },
+        { n: "螺螄粉", s: "solo", h: "heavy", t: "hot", p: "meal", e: "🌶️" },
+        { n: "大滷麵", s: "solo", h: "heavy", t: "hot", p: "meal", e: "🍜" },
+        { n: "酸辣湯麵", s: "solo", h: "heavy", t: "hot", p: "meal", e: "🌶️" },
+        { n: "擔仔麵", s: "solo", h: "light", t: "hot", p: "snack", e: "🍜" },
+        { n: "榨菜肉絲麵", s: "solo", h: "light", t: "hot", p: "meal", e: "🍜" },
+        { n: "雞絲麵", s: "solo", h: "survival", t: "hot", p: "snack", e: "🍜" },
+        { n: "蔬菜通心麵", s: "solo", h: "diet", t: "hot", p: "meal", e: "🍝" },
+        { n: "清湯米苔目", s: "solo", h: "light", t: "hot", p: "snack", e: "🥣" },
+        
+        // === 麵粉/餅皮 (Flour) ===
+        { n: "高麗菜水餃", s: "solo", h: "normal", t: "hot", p: "meal", e: "🥟" },
+        { n: "鍋貼", s: "solo", h: "heavy", t: "dry", p: "snack", e: "🥟" },
+        { n: "小籠包", s: "any", h: "normal", t: "hot", p: "snack", e: "🥢" },
+        { n: "美式漢堡", s: "group", h: "heavy", t: "dry", p: "meal", e: "🍔" },
+        { n: "披薩", s: "group", h: "heavy", t: "dry", p: "meal", e: "🍕" },
+        { n: "潛艇堡", s: "solo", h: "diet", t: "cold", p: "meal", e: "🥪" },
+        { n: "蔥抓餅加蛋", s: "solo", h: "heavy", t: "dry", p: "snack", e: "🥞" },
+        { n: "蛋餅", s: "solo", h: "light", t: "dry", p: "snack", e: "🍳" },
+        { n: "潤餅", s: "solo", h: "diet", t: "cold", p: "snack", e: "🌯" },
+        { n: "三明治", s: "solo", h: "survival", t: "cold", p: "snack", e: "🥪" },
+        { n: "刈包", s: "solo", h: "heavy", t: "dry", p: "snack", e: "🌮" },
+        { n: "胡椒餅", s: "solo", h: "heavy", t: "dry", p: "snack", e: "🫓" },
+        { n: "蘿蔔糕", s: "solo", h: "heavy", t: "dry", p: "snack", e: "🫓" },
+        { n: "燒餅油條", s: "solo", h: "heavy", t: "dry", p: "snack", e: "🫓" },
+        { n: "小籠湯包", s: "any", h: "normal", t: "hot", p: "snack", e: "🥢" },
+        { n: "千層麵", s: "group", h: "heavy", t: "hot", p: "meal", e: "🍝" },
+        { n: "熱狗堡", s: "solo", h: "heavy", t: "hot", p: "snack", e: "🌭" },
+        { n: "肉包", s: "solo", h: "light", t: "hot", p: "snack", e: "包" },
+        { n: "墨西哥捲餅", s: "solo", h: "normal", t: "dry", p: "meal", e: "🌯" },
+        { n: "鹹派", s: "solo", h: "normal", t: "hot", p: "snack", e: "🥧" },
+        { n: "全麥吐司三明治", s: "solo", h: "diet", t: "cold", p: "snack", e: "🥪" },
+        { n: "雞肉捲餅", s: "solo", h: "normal", t: "hot", p: "snack", e: "🌯" },
+
+        // === 肉類 (Meat/Protein) ===
+        { n: "韓式炸雞", s: "group", h: "heavy", t: "dry", p: "meal", e: "🍗" },
+        { n: "鹹酥雞", s: "solo", h: "heavy", t: "dry", p: "snack", e: "🐔" },
+        { n: "炸雞排", s: "solo", h: "heavy", t: "dry", p: "snack", e: "🐓" },
+        { n: "日式炸豬排", s: "any", h: "heavy", t: "dry", p: "meal", e: "🐷" },
+        { n: "平價鐵板燒", s: "any", h: "normal", t: "hot", p: "meal", e: "🔥" },
+        { n: "燒肉吃到飽", s: "group", h: "heavy", t: "dry", p: "meal", e: "🥓" },
+        { n: "烤肉串", s: "solo", h: "light", t: "dry", p: "snack", e: "🍢" },
+        { n: "生魚片", s: "any", h: "diet", t: "cold", p: "snack", e: "🍣" },
+        { n: "握壽司", s: "any", h: "diet", t: "cold", p: "snack", e: "🍣" },
+        { n: "迴轉壽司", s: "any", h: "normal", t: "cold", p: "meal", e: "🍣" },
+        { n: "牛排 (排餐)", s: "group", h: "heavy", t: "dry", p: "meal", e: "🥩" },
+        { n: "醉雞", s: "group", h: "diet", t: "cold", p: "snack", e: "🍗" },
+        { n: "桶仔雞", s: "group", h: "normal", t: "dry", p: "meal", e: "🐔" },
+        { n: "烤魚下巴", s: "solo", h: "diet", t: "dry", p: "snack", e: "🐟" },
+        { n: "清蒸魚", s: "group", h: "diet", t: "hot", p: "meal", e: "🐟" },
+        { n: "烤雞腿", s: "solo", h: "normal", t: "dry", p: "meal", e: "🍗" },
+        { n: "沙拉 (加雞肉)", s: "solo", h: "diet", t: "cold", p: "meal", e: "🥗" },
+        { n: "椒麻雞", s: "group", h: "heavy", t: "dry", p: "meal", e: "🌶️" },
+        { n: "低脂牛排 (單點)", s: "any", h: "diet", t: "hot", p: "meal", e: "🥩" },
+        { n: "舒肥雞胸沙拉", s: "solo", h: "diet", t: "cold", p: "snack", e: "🥗" },
+        { n: "清蒸蝦", s: "group", h: "diet", t: "hot", p: "snack", e: "🦐" },
+        { n: "烤鯖魚定食", s: "solo", h: "diet", t: "hot", p: "meal", e: "🐟" },
+        
+        // === 鍋物/湯類 (Soup/Pot) ===
+        { n: "羊肉爐", s: "group", h: "heavy", t: "hot", p: "meal", e: "🍲" },
+        { n: "薑母鴨", s: "group", h: "heavy", t: "hot", p: "meal", e: "🦆" },
+        { n: "臭臭鍋/小火鍋", s: "any", h: "normal", t: "hot", p: "meal", e: "🍲" },
+        { n: "麻辣鍋", s: "group", h: "heavy", t: "hot", p: "meal", e: "🌶️" },
+        { n: "海鮮豆腐鍋", s: "any", h: "normal", t: "hot", p: "meal", e: "🍲" },
+        { n: "酸菜白肉鍋", s: "group", h: "heavy", t: "hot", p: "meal", e: "🍲" },
+        { n: "壽喜燒", s: "group", h: "heavy", t: "hot", p: "meal", e: "🥩" },
+        { n: "藥燉排骨", s: "solo", h: "diet", t: "hot", p: "snack", e: "🍖" },
+        { n: "清燉排骨湯", s: "solo", h: "diet", t: "hot", p: "snack", e: "🥣" },
+        { n: "香菇雞湯", s: "group", h: "diet", t: "hot", p: "snack", e: "🥣" },
+        { n: "玉米濃湯", s: "solo", h: "heavy", t: "hot", p: "snack", e: "🥣" },
+        { n: "酸辣湯", s: "solo", h: "heavy", t: "hot", p: "snack", e: "🌶️" },
+        { n: "部隊鍋", s: "group", h: "heavy", t: "hot", p: "meal", e: "🍜" },
+        { n: "咖哩湯", s: "solo", h: "normal", t: "hot", p: "snack", e: "🍛" },
+        { n: "味噌湯", s: "solo", h: "light", t: "hot", p: "snack", e: "🥣" },
+        { n: "豬血湯", s: "solo", h: "light", t: "hot", p: "snack", e: "🥣" },
+        { n: "甜湯 (紅豆/綠豆)", s: "solo", h: "heavy", t: "hot", p: "snack", e: "🫘" },
+        { n: "蔬菜清湯", s: "solo", h: "diet", t: "hot", p: "snack", e: "🥣" },
+        { n: "南瓜濃湯", s: "solo", h: "normal", t: "hot", p: "snack", e: "🥣" },
+
+        // === 拼盤/小吃/甜點 (Mix/Small Eats) ===
+        { n: "乾式滷味", s: "solo", h: "normal", t: "dry", p: "snack", e: "🥚" },
+        { n: "麻辣燙", s: "solo", h: "heavy", t: "hot", p: "meal", e: "🌶️" },
+        { n: "鹹水雞", s: "solo", h: "diet", t: "cold", p: "meal", e: "🐔" },
+        { n: "關東煮", s: "solo", h: "normal", t: "hot", p: "snack", e: "🍢" },
+        { n: "清粥小菜", s: "any", h: "diet", t: "hot", p: "meal", e: "🍚" },
+        { n: "炸臭豆腐", s: "solo", h: "heavy", t: "dry", p: "snack", e: "👃" },
+        { n: "麻辣鴨血", s: "any", h: "heavy", t: "hot", p: "snack", e: "🌶️" },
+        { n: "蚵仔煎", s: "solo", h: "heavy", t: "hot", p: "snack", e: "🦪" },
+        { n: "肉圓", s: "solo", h: "heavy", t: "hot", p: "snack", e: "🔮" },
+        { n: "碗粿", s: "solo", h: "normal", t: "hot", p: "snack", e: "🥣" },
+        { n: "大腸包小腸", s: "solo", h: "heavy", t: "dry", p: "snack", e: "🌭" },
+        { n: "豆漿油條", s: "solo", h: "heavy", t: "hot", p: "snack", e: "🥛" },
+        { n: "珍珠奶茶", s: "solo", h: "heavy", t: "cold", p: "snack", e: "🧋" },
+        { n: "綠豆湯", s: "solo", h: "diet", t: "cold", p: "snack", e: "🫘" },
+        { n: "豆花", s: "solo", h: "normal", t: "cold", p: "snack", e: "🍮" },
+        { n: "燒仙草", s: "solo", h: "normal", t: "hot", p: "snack", e: "🍮" },
+        { n: "刨冰", s: "solo", h: "heavy", t: "cold", p: "snack", e: "🍧" },
+        { n: "紅豆餅/車輪餅", s: "solo", h: "light", t: "hot", p: "snack", e: "🍘" },
+        { n: "沙拉 (單純蔬菜)", s: "solo", h: "diet", t: "cold", p: "snack", e: "🥗" },
+        { n: "吐司夾蛋", s: "solo", h: "survival", t: "hot", p: "snack", e: "🥪" },
+        { n: "地瓜 (烤)", s: "solo", h: "diet", t: "hot", p: "snack", e: "🍠" },
+        { n: "烤甜不辣", s: "solo", h: "normal", t: "dry", p: "snack", e: "🍢" },
+        { n: "烤玉米", s: "solo", h: "heavy", t: "dry", p: "snack", e: "🌽" },
+        { n: "茶葉蛋", s: "solo", h: "diet", t: "hot", p: "snack", e: "🥚" },
+        { n: "雞蛋糕", s: "solo", h: "light", t: "hot", p: "snack", e: "🧇" },
+        { n: "水果拼盤", s: "solo", h: "diet", t: "cold", p: "snack", e: "🥝" },
+        { n: "鮮奶", s: "solo", h: "diet", t: "cold", p: "snack", e: "🥛" },
+        { n: "優格", s: "solo", h: "diet", t: "cold", p: "snack", e: "🍦" }
+    ];
+
+    // --- 2. 狀態管理 ---
+    // 預設值：solo, normal, hot, meal
+    let filters = { social: 'solo', health: 'normal', temp: 'hot', purpose: 'meal' }; 
+    let candidates = [];
+    let killedIndices = new Set();
+    let filteredPool = [];
+    let poolIndex = 0; 
+
+    // --- 3. 頁面跳轉邏輯 ---
+    function goHome() {
+        showScreen('screen-home');
+    }
+
+    function goToFilter() {
+        showScreen('screen-filter');
+        
+        document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+        
+        // 根據當前 filters 狀態，重新選中按鈕 (修復方案)
+        selectBtn('social', filters.social);
+        selectBtn('health', filters.health);
+        selectBtn('temp', filters.temp);
+        selectBtn('purpose', filters.purpose);
+    }
+
+    function setFilter(type, val, btn) {
+        filters[type] = val;
+        const group = document.querySelectorAll(`[data-q="${type}"]`);
+        group.forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+    }
+
+    function selectBtn(type, val) {
+        // 修正：使用屬性選擇器來匹配 val
+        const btn = document.querySelector(`[data-q="${type}"][onclick*="'${val}'"]`);
+        if(btn) btn.classList.add('selected');
+    }
+
+    function goToElimination() {
+        // 1. 篩選邏輯 (氛圍篩選)
+        let initialList = db.filter(item => {
+            let sMatch = false;
+            // Q1 社交匹配
+            if (filters.social === 'any') sMatch = true;
+            else if (filters.social === 'solo') sMatch = (item.s === 'solo' || item.s === 'any');
+            else if (filters.social === 'group') sMatch = (item.s === 'group' || item.s === 'any');
+
+            // Q2 罪惡感匹配
+            const healthMatch = (filters.health === 'any') || (item.h === filters.health);
+            // Q3 溫度匹配
+            const tempMatch = (filters.temp === 'any') || (item.t === filters.temp);
+            // Q4 目的匹配 (新增)
+            const purposeMatch = (filters.purpose === 'any') || (item.p === filters.purpose);
+            
+            return sMatch && healthMatch && tempMatch && purposeMatch; // 所有條件 AND
+        });
+        
+        // 自動放寬 (如果篩選太嚴苛，則忽略目的 Q4 和 罪惡感 Q2)
+        if (initialList.length < 4) {
+            initialList = db.filter(item => {
+                 let sMatch = false;
+                if (filters.social === 'any') sMatch = true;
+                else if (filters.social === 'solo') sMatch = (item.s === 'solo' || item.s === 'any');
+                else if (filters.social === 'group') sMatch = (item.s === 'group' || item.s === 'any');
+                
+                const tempMatch = (filters.temp === 'any') || (item.t === filters.temp);
+                const purposeMatch = (filters.purpose === 'any') || (item.p === filters.purpose);
+
+                // 忽略 health 條件，僅保留 social, temp, purpose
+                return sMatch && tempMatch && purposeMatch;
+            });
+        }
+
+        // 2. 初始化牌庫
+        filteredPool = shuffle(initialList);
+        poolIndex = 0;
+        
+        // 3. 載入第一批
+        loadNextBatch();
+        showScreen('screen-elimination');
+    }
+
+    // --- 隨機一發 ---
+    function startRandom() {
+        const luckyItem = db[Math.floor(Math.random() * db.length)];
+        renderResult([luckyItem]);
+        document.querySelector('#screen-result .subtitle').innerHTML = "命運之神隨便挑了一個給你：";
+        showScreen('screen-result');
+    }
+
+    // --- 4. 格鬥場與換批功能 ---
+    function loadNextBatch() {
+        const batchSize = 16;
+        
+        if (poolIndex >= filteredPool.length) {
+            if (filteredPool.length === 0) {
+                candidates = [];
+            } else {
+                filteredPool = shuffle(filteredPool);
+                poolIndex = 0;
+                candidates = filteredPool.slice(poolIndex, poolIndex + batchSize);
+                poolIndex += batchSize;
+                showToast("名單已循環，重新洗牌！");
+            }
+        } else {
+            candidates = filteredPool.slice(poolIndex, poolIndex + batchSize);
+            poolIndex += batchSize;
+        }
+
+        killedIndices.clear(); 
+        renderGrid();
+        
+        document.getElementById('grid-container').scrollTop = 0;
+    }
+
+    function renderGrid() {
+        const container = document.getElementById('grid-container');
+        container.innerHTML = '';
+
+        if (candidates.length === 0) {
+            container.innerHTML = '<div style="grid-column: span 2; text-align:center; padding:20px;">找不到符合的食物...<br>可能條件太嚴苛了，回上一頁放寬一點吧！</div>';
+            return;
+        }
+
+        candidates.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'food-item';
+            div.innerHTML = `
+                <div class="food-emoji">${item.e}</div>
+                <div class="food-name">${item.n}</div>
+            `;
+            div.onclick = () => killFood(index, div);
+            container.appendChild(div);
+        });
+    }
+
+    function killFood(index, element) {
+        if (killedIndices.has(index)) {
+            killedIndices.delete(index);
+            element.classList.remove('killed');
+        } else {
+            killedIndices.add(index);
+            element.classList.add('killed');
+        }
+    }
+
+    function showFinalResult() {
+        const survivors = candidates.filter((_, index) => !killedIndices.has(index));
+
+        if (survivors.length === 0) {
+            showToast("全被你殺光了！你是要絕食嗎？🤣");
+            return;
+        }
+
+        renderResult(survivors);
+        document.querySelector('#screen-result .subtitle').innerHTML = "這些是你刀下留人的菁英 (共 " + survivors.length + " 項)：";
+        showScreen('screen-result');
+    }
+
+    function renderResult(items) {
+        const container = document.getElementById('result-content');
+        container.innerHTML = '';
+        items.forEach(item => {
+            const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.n)}`;
+            container.innerHTML += `
+                <div class="result-card">
+                    <div style="display:flex; align-items:center;">
+                        <span style="font-size:2rem; margin-right:10px;">${item.e}</span>
+                        <span style="font-size:1.2rem; font-weight:bold;">${item.n}</span>
+                    </div>
+                    <a href="${mapUrl}" target="_blank" class="gmap-link">搜地圖</a>
+                </div>
+            `;
+        });
+    }
+
+    // --- 工具函式 ---
+    function showScreen(id) {
+        document.querySelectorAll('.card').forEach(c => c.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+    }
+
+    function shuffle(array) {
+        let currentIndex = array.length, randomIndex;
+        while (currentIndex != 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('roast-toast');
+        t.innerText = msg;
+        t.classList.remove('hidden');
+        setTimeout(() => t.classList.add('hidden'), 2000);
+    }
+
+</script>
+
+</body>
+</html>
